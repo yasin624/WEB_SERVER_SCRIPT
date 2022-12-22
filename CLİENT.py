@@ -97,7 +97,7 @@ Client_logo="""
 class CLİENT():
     def __init__(self):
         self.HOST ="45.10.151.158" # Standard loopback interface address (localhost)
-        self.PORT =9999     # Port to listen on (non-privileged ports are > 1023)
+        self.PORT =9999     # Port tqxo listen on (non-privileged ports are > 1023)
         self.server=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #self.package_size=3
 
@@ -115,7 +115,7 @@ class CLİENT():
         return msg.decode("utf-8")
     def CONNECT(self):
         self.server.connect((self.HOST,self.PORT))
-        print("connect to : ",self.server.getsockname())
+        print(" \n connect to : ",self.server.getsockname())
     def sends(self,msg):
         self.server.send(self.encoding(msg))
     def take(self):
@@ -131,8 +131,12 @@ class CLİENT():
         self.prev_frame_time=time
         cv2.putText(img, "FPS : "+str(int(fps)), (20,20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (100, 255, 0),1)
         return img
-    def wepcam(self):
-        pass
+
+    def REKLAM(self,img):
+        #################################### fps
+        cv2.putText(img, "Tum haklari saklidir © 2020 | yalcinyazilimciik", (img.shape[1]-700,
+                                                                             img.shape[0]-13), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (100, 255, 0),1)
+        return img
     def shows(self,frame):
         try:
             cv2.imshow("RECEIVING VIDEO",frame)
@@ -174,12 +178,50 @@ class CLİENT():
                     if cv2.waitKey(1) & 0xFF == ord("q"):
                         basla=False
                         break
+        cv2.destroyAllWindows()
+    def send_arr(self,reklam=True):
+        camera = cv2.VideoCapture(0)
+
+        fps = camera.get(cv2.CAP_PROP_FPS)
+        width = camera.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        print(f"\n webcam max  fps :  {int(fps)}  ( {int(width)} X {int(height)} ) ")
+        star=True
+        while star:
+            # Görüntüyü al
+            ret, frame = camera.read()
+            #frame=cv2.resize(frame,(1280,720))
+            if reklam:
+                frame=self.REKLAM(frame)
+            # Görüntüyü JPEG formatta sıkıştır
+            ret, jpeg = cv2.imencode(".jpg", frame)
+
+            # Görüntüyü sockete gönder
+            try:
+                self.server.sendall(jpeg.tobytes())
+                time.sleep(0.01)
+            except:
+                star=False
+
+        # Kamerayı ve socketi kapat
+        camera.release()
 
 
-if __name__=="__main__":
+def take_video():
     print(Client_logo)
 
     client=CLİENT()
     client.CONNECT()
     client.take_msg()
     client.server.close()
+
+def send_video():
+    print(Client_logo)
+
+    client=CLİENT()
+    client.CONNECT()
+    client.send_arr()
+    client.server.close()
+
+if __name__=="__main__":
+   send_video()
