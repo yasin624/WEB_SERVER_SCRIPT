@@ -96,7 +96,7 @@ Client_logo="""
 
 class CLİENT():
     def __init__(self):
-        self.HOST ="169.254.168.127" # Standard loopback interface address (localhost)
+        self.HOST ="45.10.151.158" # Standard loopback interface address (localhost)
         self.PORT =9999     # Port to listen on (non-privileged ports are > 1023)
         self.server=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #self.package_size=3
