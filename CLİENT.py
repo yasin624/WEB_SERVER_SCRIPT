@@ -190,7 +190,7 @@ class CLİENT():
         while star:
             # Görüntüyü al
             ret, frame = camera.read()
-            #frame=cv2.resize(frame,(1280,720))
+            frame=cv2.resize(frame,(1280,720))
             if reklam:
                 frame=self.REKLAM(frame)
             # Görüntüyü JPEG formatta sıkıştır
